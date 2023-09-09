@@ -1,4 +1,4 @@
-./.idea/*
+.idea
 ./edk2/*
 ./mntVirtDrive/*
 ./formatedVirtDrive
