@@ -59,7 +59,7 @@ sudo mkdir "$mntVirtDrive"/EFI/boot
 sudo touch "$mntVirtDrive"/EFI/boot/bootX64.efi
 
 sudo dd if=edk2/Build/Shell/DEBUG_GCC5/X64/Shell_7C04A583-9E3E-4f1c-AD65-E05268D0B4D1.efi of="$mntVirtDrive"/EFI/boot/bootX64.efi
-sudo cp -r edk2/Build/Shell/DEBUG_GCC5/X64/* "$mntVirtDrive"/EFI/boot/
-sudo cp -r edk2/Build/MdeModule/DEBUG_GCC5/X64/* "$mntVirtDrive"/EFI/boot/
+sudo cp -r -v edk2/Build/Shell/DEBUG_GCC5/X64/* "$mntVirtDrive"/EFI/boot/
+sudo cp -r -v edk2/Build/MdeModule/DEBUG_GCC5/X64/* "$mntVirtDrive"/EFI/boot/
 
 vboxmanage convertfromraw --format vdi formatedVirtDrive ./formatedVirtDrive.vdi
