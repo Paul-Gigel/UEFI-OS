@@ -5,7 +5,7 @@
 #git clone https://github.com/tianocore/edk2.git
 cd edk2
 #git submodule update --init
-#export EDK_TOOLS_PATH=$PWD/BaseTools
+export EDK_TOOLS_PATH=$PWD/BaseTools
 source edksetup.sh
 make -C BaseTools
 . edksetup.sh
