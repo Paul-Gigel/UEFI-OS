@@ -10,13 +10,13 @@ mntVirtDrive="./mntVirtDrive"
 loop="$(cat loop.txt)"
 
 #cleanup
+sudo rm -rfv "$mntVirtDrive"  #delete everything inside $mntVirtDrive
 sudo umount "$mntVirtDrive"
-sudo rm -rf "$mntVirtDrive"
 if [ -f formatedVirtDrive.vdi ]; then
-    rm formatedVirtDrive.vdi
+    rm -v formatedVirtDrive.vdi
 fi
 if [ -f loop.txt ]; then
-  rm loop.txt
+  rm -v loop.txt
   sudo losetup -d "$loop" #detach created loop
 fi
 if [ -f formatedVirtDrive ]; then
@@ -30,8 +30,9 @@ dd if=/dev/zero of=formatedVirtDrive bs=1M count=1024
 
 #create LoopDevice and write Name to File
 (sudo losetup -fP formatedVirtDrive --show)>loop.txt
+
+#inform the os-Kernel of partition table changes
 sudo partprobe $(cat loop.txt)  # THATS THE TRICK :) now I have to loopNp1
-#sudo losetup -j formatedVirtDrive #list associated loops(should be max 1)
 
 #write gpt, esp, fat32fs
 sudo parted -s $(cat loop.txt) mklabel gpt;
@@ -44,8 +45,6 @@ sudo losetup -j formatedVirtDrive
 
 #writeFileSystem
 sudo mkfs.vfat -F32 $(cat loop.txt)p1
-#sudo parted -s formatedVirtDrive set 1 boot on;
-#sudo parted -s formatedVirtDrive set 1 esp on;
 sudo parted $(cat loop.txt) print
 
 
@@ -54,12 +53,15 @@ sudo parted $(cat loop.txt) print
 mkdir "$mntVirtDrive"
 sudo mount -t vfat $(cat loop.txt)p1 "$mntVirtDrive"
 
+#create appropriate Folders
 sudo mkdir "$mntVirtDrive"/EFI
 sudo mkdir "$mntVirtDrive"/EFI/boot
 sudo touch "$mntVirtDrive"/EFI/boot/bootX64.efi
 
-sudo dd if=edk2/Build/Shell/DEBUG_GCC5/X64/Shell_7C04A583-9E3E-4f1c-AD65-E05268D0B4D1.efi of="$mntVirtDrive"/EFI/boot/bootX64.efi
-sudo cp -r -v edk2/Build/Shell/DEBUG_GCC5/X64/* "$mntVirtDrive"/EFI/boot/
+#copy (timeintensive)
+#find ./edk2/Build/Shell/DEBUG_GCC5/X64/ -name 'Shell.efi'
+sudo dd if=edk2/Build/Shell/DEBUG_GCC5/X64/ShellPkg/Application/Shell/Shell/OUTPUT/Shell.efi of="$mntVirtDrive"/EFI/boot/bootX64.efi
+#sudo cp -r -v edk2/Build/Shell/DEBUG_GCC5/X64/*.efi "$mntVirtDrive"/EFI/boot/
 sudo cp -r -v edk2/Build/MdeModule/DEBUG_GCC5/X64/* "$mntVirtDrive"/EFI/boot/
 
 vboxmanage convertfromraw --format vdi formatedVirtDrive ./formatedVirtDrive.vdi

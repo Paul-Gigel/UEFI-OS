@@ -1,8 +1,3 @@
-#cleanup
-    umount mntVirtDrive
-    rm formatedVirtDrive
-    rm formatedVirtDrive.vdi
-
 #compile (this can take up a lot of time)
 #    Build -a X64 -p MdeModulePkg/MdeModulePkg.dsc
 
